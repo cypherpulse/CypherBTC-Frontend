@@ -54,26 +54,157 @@ CypherBTC Frontend is a modern React-based dApp that provides seamless interacti
 
 ## Architecture
 
+### System Architecture Overview
+
+```mermaid
+graph TB
+    A[User Browser] --> B[React Frontend]
+    B --> C[WalletConnect]
+    C --> D[Hiro Wallet Extension]
+
+    B --> E[Stacks.js Library]
+    E --> F[Stacks Blockchain]
+
+    B --> G[Backend API]
+    G --> H[Event Streaming Service]
+    H --> I[WebSocket Connections]
+
+    F --> J[Smart Contracts]
+    J --> K[CypherBTC Token]
+    J --> L[CypherCollectibles NFT]
+    J --> M[Profile Registry]
+
+    subgraph "Frontend Layer"
+        B
+        N[Components]
+        O[Pages]
+        P[Hooks]
+        Q[State Store]
+    end
+
+    subgraph "Blockchain Layer"
+        F
+        J
+    end
+
+    subgraph "Backend Services"
+        G
+        H
+    end
 ```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   React App     │    │   Stacks.js     │    │   Hiro Wallet   │
-│                 │◄──►│   Integration   │◄──►│   Extension     │
-│  ┌────────────┐ │    │                 │    │                 │
-│  │ Components │ │    └─────────────────┘    └─────────────────┘
-│  │   Pages    │ │
-│  │   Hooks    │ │    ┌─────────────────┐    ┌─────────────────┐
-│  └────────────┘ │    │   Backend API   │    │   Stacks Node   │
-└─────────────────┘    │   (Events)      │◄──►│                 │
-                       └─────────────────┘    └─────────────────┘
+
+### Component Architecture
+
+```mermaid
+graph TD
+    A[App.tsx] --> B[MainLayout]
+    B --> C[Header]
+    B --> D[Sidebar]
+    B --> E[Main Content]
+
+    E --> F[Dashboard Page]
+    E --> G[Collectibles Page]
+    E --> H[Profile Page]
+    E --> I[Activity Page]
+
+    F --> J[StatCard Components]
+    F --> K[ActivityItem Components]
+
+    G --> L[NFTCard Components]
+    G --> M[WalletConnect Component]
+
+    H --> N[Profile Form Components]
+
+    I --> O[ActivityFeed Component]
+
+    P[Wallet Store] --> Q[useWallet Hook]
+    R[API Client] --> S[useActivityFeed Hook]
+
+    T[Tailwind CSS] --> U[shadcn/ui Components]
+    U --> V[All UI Components]
+```
+
+### Data Flow Architecture
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant F as Frontend
+    participant W as Wallet
+    participant B as Backend
+    participant S as Stacks Node
+
+    U->>F: Connect Wallet
+    F->>W: Request Connection
+    W->>F: Connection Approved
+
+    U->>F: View Dashboard
+    F->>B: Request User Data
+    B->>S: Query Blockchain
+    S->>B: Return Data
+    B->>F: Stream Data
+    F->>U: Display Dashboard
+
+    U->>F: Send Transaction
+    F->>W: Sign Transaction
+    W->>F: Signed TX
+    F->>S: Submit Transaction
+    S->>F: TX Confirmed
+    F->>U: Show Success
+
+    Note over B: Real-time Event Streaming
+    B->>F: Push Activity Updates
+    F->>U: Live Activity Feed
 ```
 
 ### Key Components
 
-- **Frontend Layer**: React application with TypeScript
-- **State Management**: Centralized store for wallet and app state
-- **Blockchain Integration**: Stacks.js for contract interactions
-- **Real-time Data**: WebSocket connections for live updates
-- **UI Components**: Reusable component library with Tailwind CSS
+- **Frontend Layer**: React application with TypeScript providing the user interface
+- **State Management**: Centralized Zustand store for wallet connections and app state
+- **Blockchain Integration**: Stacks.js library handling all blockchain interactions
+- **Real-time Data**: WebSocket connections for live activity feed updates
+- **UI Components**: Reusable component library built with Tailwind CSS and shadcn/ui
+- **Wallet Integration**: Hiro Wallet connection for secure blockchain transactions
+- **API Layer**: RESTful API client for backend service communication
+
+### Technology Stack Architecture
+
+```mermaid
+mindmap
+  root((CypherBTC Frontend))
+    React
+      Hooks
+      Context
+      Components
+    TypeScript
+      Type Safety
+      Interfaces
+      Generics
+    Vite
+      Fast HMR
+      Optimized Build
+      Plugin System
+    Tailwind CSS
+      Utility Classes
+      Responsive Design
+      Dark Mode
+    shadcn/ui
+      Accessible Components
+      Radix Primitives
+      Customizable
+    Stacks.js
+      Contract Calls
+      Transaction Building
+      Network Management
+    Hiro Wallet
+      Secure Connection
+      Transaction Signing
+      Account Management
+    Web3 Integration
+      Real-time Updates
+      Event Streaming
+      API Communication
+```
 
 ## Technologies
 

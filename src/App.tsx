@@ -11,13 +11,36 @@ import { Collectibles } from "./pages/Collectibles";
 import { Activity } from "./pages/Activity";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+// Configure React Query with optimized settings for blockchain dApp
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
+      retry: (failureCount, error) => {
+        // Don't retry on 4xx errors (client errors)
+        if (error instanceof Error && error.message.includes('4')) {
+          return false;
+        }
+        return failureCount < 3;
+      },
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
+/**
+ * Main Application Component
+ *
+ * Sets up the core providers and routing for the CypherBTC dApp.
+ * Includes React Query for data fetching, toast notifications,
+ * tooltips, and client-side routing with protected layouts.
+ */
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
+    <TooltipProvider delayDuration={200}>
       <Toaster />
-      <Sonner />
+      <Sonner position="top-right" />
       <BrowserRouter>
         <Routes>
           <Route element={<MainLayout />}>
